@@ -55,11 +55,11 @@ def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True,
     Initialize parameters dictionary
     """
     if initialization == "zeros":
-        parameters = initialization_parameter_zeros(layers_dims)
+        parameters = initialize_parameters_zeros(layer_dims)
     elif initialization == "random":
-        parameters = initialization_parameter_random(layers_dims)
+        parameters = initialize_parameters_random(layer_dims)
     elif initialization == "he":
-        parameters = initialization_parameter_he(layers_dims)
+        parameters = initialize_parameters_he(layer_dims)
         
     """
     Loop (gradient decent)
@@ -81,12 +81,81 @@ def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True,
         if print_cost and i % 1000 == 0:
             print("Cost after iteration{}: {}".format(i, cost))
             costs.append(cost)
+    
+    """
+    Plot the loss
+    """
+    plt.plot(costs)
+    plt.ylabel('cost')
+    plt.xlabel('iterations (per hundreds)')
+    plt.title("Learning rate = " + str(learning_rate))
+    plt.show()
+    
+    return parameters
+
+def initialize_parameters_zeros(layers_dims):
+    """
+    Arguments:
+        layer_dims -- python array (list) containing the size of each layer.
+    
+    Returns:
+        parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+                        W1 -- weight matrix of shape (layers_dims[1], layers_dims[0])
+                        b1 -- bias vector of shape (layers_dims[1], 1)
+                        ...
+                        WL -- weight matrix of shape (layers_dims[L], layers_dims[L-1])
+                        bL -- bias vector of shape (layers_dims[L], 1)
+    """
+    parameters = {}
+    L = len(layers_dims)
+    
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.zeros((layers_dims[l], layers_dims[l-1]))
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 
 
 
+"""
+The following code train the model on 15000 iterations using zeros initialization
+"""
+parameters = model(train_X, train_Y, initialization = "zeros")
+print("On the train set: ")
+predictions_train = predict(train_X, train_Y, parameters)
+print("On the test set: ")
+predictions_test = predict(test_X, test_Y, parameters)
 
+#print ("predictions_train = " + str(predictions_train))
+#print ("predictions_test = " + str(predictions_test))
 
+"""
+#don't know what the problem is here
+plt.title("Model with Zeros initialization")
+axes = plt.gca()
+axes.set_xlim([-1.5,1.5])
+axes.set_ylim([-1.5,1.5])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
+"""
 
+def initialize_parameters_random(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python array (list) containing the size of each layer.
+    
+    Returns:
+    parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+                    W1 -- weight matrix of shape (layers_dims[1], layers_dims[0])
+                    b1 -- bias vector of shape (layers_dims[1], 1)
+                    ...
+                    WL -- weight matrix of shape (layers_dims[L], layers_dims[L-1])
+                    bL -- bias vector of shape (layers_dims[L], 1)
+    """
+    np.random.seed(3)
+    parameters = {}
+    L = len(layers_dims)
+    
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.ran
 
 
 

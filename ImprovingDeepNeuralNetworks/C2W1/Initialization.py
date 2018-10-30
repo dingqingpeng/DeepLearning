@@ -49,17 +49,17 @@ def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True,
     grads = {}
     costs = []      #keep track of the loss
     m = X.shape[1]  #number of examples
-    layer_dims = [X.shape[0], 10, 5, 1]
+    layers_dims = [X.shape[0], 10, 5, 1]
     
     """
     Initialize parameters dictionary
     """
     if initialization == "zeros":
-        parameters = initialize_parameters_zeros(layer_dims)
+        parameters = initialize_parameters_zeros(layers_dims)
     elif initialization == "random":
-        parameters = initialize_parameters_random(layer_dims)
+        parameters = initialize_parameters_random(layers_dims)
     elif initialization == "he":
-        parameters = initialize_parameters_he(layer_dims)
+        parameters = initialize_parameters_he(layers_dims)
         
     """
     Loop (gradient decent)
@@ -119,11 +119,11 @@ def initialize_parameters_zeros(layers_dims):
 """
 The following code train the model on 15000 iterations using zeros initialization
 """
-parameters = model(train_X, train_Y, initialization = "zeros")
-print("On the train set: ")
-predictions_train = predict(train_X, train_Y, parameters)
-print("On the test set: ")
-predictions_test = predict(test_X, test_Y, parameters)
+#parameters = model(train_X, train_Y, print_cost = False, initialization = "zeros")
+#print("On the train set: ")
+#predictions_train = predict(train_X, train_Y, parameters)
+#print("On the test set: ")
+#predictions_test = predict(test_X, test_Y, parameters)
 
 #print ("predictions_train = " + str(predictions_train))
 #print ("predictions_test = " + str(predictions_test))
@@ -155,9 +155,15 @@ def initialize_parameters_random(layers_dims):
     L = len(layers_dims)
     
     for l in range(1, L):
-        parameters['W' + str(l)] = np.ran
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l-1]) * 10
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 
-
+parameters = initialize_parameters_random([3, 2, 1])
+print("W1 = " + str(parameters["W1"]))
+print("b1 = " + str(parameters["b1"]))
+print("W2 = " + str(parameters["W2"]))
+print("b2 = " + str(parameters["b2"]))
 
 
 

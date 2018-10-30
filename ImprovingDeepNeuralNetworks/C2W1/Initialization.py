@@ -22,16 +22,16 @@ from init_utils import sigmoid, relu, compute_loss, forward_propagation, backwar
 from init_utils import update_parameters, predict, load_dataset, plot_decision_boundary, predict_dec
 
 #%matplotlib inline
-plt.rcParams['figure.figsize'] = (7.0, 4.0)         #set default size of plots
+plt.rcParams['figure.figsize'] = (5.0, 5.0)         #set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
 plt.rcParams['image.cmap'] = 'gray'
 
 """
 load image dataset: blue/red dots in circles
 """
-train_X, train_Y, test_X, test_Y = load_dataset()
+train_X, train_Y, test_X, test_Y = load_dataset(plot = False)
 
-def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True, initialization = "he"):
+def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True, plot_loss = True, initialization = "he"):
     """
     Implement a 3-layer neural network: LINEAR->RELU->LINEAR->RELU->LINEAR->SIGMOID
     
@@ -48,7 +48,7 @@ def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True,
     """
     grads = {}
     costs = []      #keep track of the loss
-    m = X.shape[1]  #number of examples
+    #m = X.shape[1]  #number of examples
     layers_dims = [X.shape[0], 10, 5, 1]
     
     """
@@ -80,16 +80,17 @@ def model(X, Y, learning_rate = 0.01, num_iterations = 15000, print_cost = True,
         #Print loss
         if print_cost and i % 1000 == 0:
             print("Cost after iteration{}: {}".format(i, cost))
-            costs.append(cost)
+        costs.append(cost)
     
     """
     Plot the loss
     """
-    plt.plot(costs)
-    plt.ylabel('cost')
-    plt.xlabel('iterations (per hundreds)')
-    plt.title("Learning rate = " + str(learning_rate))
-    plt.show()
+    if plot_loss:
+        plt.plot(costs)
+        plt.ylabel('cost')
+        plt.xlabel('iterations (per hundreds)')
+        plt.title("Learning rate = " + str(learning_rate))
+        plt.show()
     
     return parameters
 
@@ -114,29 +115,6 @@ def initialize_parameters_zeros(layers_dims):
         parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
     return parameters
 
-
-
-"""
-The following code train the model on 15000 iterations using zeros initialization
-"""
-#parameters = model(train_X, train_Y, print_cost = False, initialization = "zeros")
-#print("On the train set: ")
-#predictions_train = predict(train_X, train_Y, parameters)
-#print("On the test set: ")
-#predictions_test = predict(test_X, test_Y, parameters)
-
-#print ("predictions_train = " + str(predictions_train))
-#print ("predictions_test = " + str(predictions_test))
-
-"""
-#don't know what the problem is here
-plt.title("Model with Zeros initialization")
-axes = plt.gca()
-axes.set_xlim([-1.5,1.5])
-axes.set_ylim([-1.5,1.5])
-plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
-"""
-
 def initialize_parameters_random(layers_dims):
     """
     Arguments:
@@ -159,15 +137,48 @@ def initialize_parameters_random(layers_dims):
         parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
     return parameters
 
-parameters = initialize_parameters_random([3, 2, 1])
-print("W1 = " + str(parameters["W1"]))
-print("b1 = " + str(parameters["b1"]))
-print("W2 = " + str(parameters["W2"]))
-print("b2 = " + str(parameters["b2"]))
+def initialize_parameters_he(layers_dims):
+    """
+    Arguments:
+    layer_dims -- python array (list) containing the size of each layer.
+    
+    Returns:
+    parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+                    W1 -- weight matrix of shape (layers_dims[1], layers_dims[0])
+                    b1 -- bias vector of shape (layers_dims[1], 1)
+                    ...
+                    WL -- weight matrix of shape (layers_dims[L], layers_dims[L-1])
+                    bL -- bias vector of shape (layers_dims[L], 1)
+    """
+    np.random.seed(3)
+    parameters = {}
+    L = len(layers_dims)
+    
+    for l in range(1, L):
+        parameters['W' + str(l)] = np.random.randn(layers_dims[l], layers_dims[l-1]) * np.sqrt(2./layers_dims[l-1])
+        parameters['b' + str(l)] = np.zeros((layers_dims[l], 1))
+    return parameters
 
 
-
-
-
-
+"""
+The following code train the model on 15000 iterations using certain initialization
+"""
+parameters = model(train_X, train_Y, print_cost = False, plot_loss = True, initialization = "he")
+print("On the train set: ")
+predictions_train = predict(train_X, train_Y, parameters)
+print("On the test set: ")
+predictions_test = predict(test_X, test_Y, parameters)
+"""
+Print predictions
+"""
+#print ("predictions_train = " + str(predictions_train))
+#print ("predictions_test = " + str(predictions_test))
+"""
+Plot decision boundary
+"""
+plt.title("Model with Certain initialization")
+axes = plt.gca()
+axes.set_xlim([-1.5,1.5])
+axes.set_ylim([-1.5,1.5])
+plot_decision_boundary(lambda x: predict_dec(parameters, x.T), train_X, train_Y)
 

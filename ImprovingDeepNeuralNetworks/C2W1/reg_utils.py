@@ -324,13 +324,14 @@ def plot_decision_boundary(model, X, y):
     plt.scatter(X[0, :], X[1, :], c=y, cmap=plt.cm.Spectral)
     plt.show()
     
-def load_2D_dataset():
+def load_2D_dataset(plot = False):
     data = scipy.io.loadmat('datasets/data.mat')
     train_X = data['X'].T
     train_Y = data['y'].T
     test_X = data['Xval'].T
     test_Y = data['yval'].T
-
-    plt.scatter(train_X[0, :], train_X[1, :], c=train_Y.reshape(-1,), s=40, cmap=plt.cm.Spectral);
+    
+    if plot == True:
+        plt.scatter(train_X[0, :], train_X[1, :], c=train_Y.reshape(-1,), s=40, cmap=plt.cm.Spectral)
     
     return train_X, train_Y, test_X, test_Y

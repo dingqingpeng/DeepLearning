@@ -117,6 +117,36 @@ def compute_cost(An, Y):
     cost = -1./m * np.nansum(logprobs)
     return cost
 
+def compute_cost_with_regularization(An, Y, parameters, lambd):
+    """
+    Implement the cost function with L2 regularization
+    
+    Arguments:
+        An -- post-activation, output of forward propagation
+        Y -- "true" labels vector, same shape as An
+        parameters -- python dictionary containing parameters of the model
+        lambd -- regularization hyperparameter, scalar
+    
+    Returns:
+        cost - value of the cost function
+    """
+    m = Y.shape[1]
+    
+    # Retrieve W parameter
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+    W3 = parameters["W3"]
+    
+    # cross-entropy part of the cost
+    cross_entropy_cost = compute_cost(An, Y)
+    
+    # L2 regularization part of the cost
+    L2_regularization_cost = 1./m * lambd/2. * (np.sum(np.square(W1)) + np.sum(np.square(W2)) + np.sum(np.square(W3)))
+    
+    cost = cross_entropy_cost + L2_regularization_cost
+    
+    return cost
+
 def backward_propagation(X, Y, cache):
     """
     Implement the backward propagation.
@@ -151,6 +181,26 @@ def backward_propagation(X, Y, cache):
                  "dA1": dA1, "dZ1": dZ1, "dW1": dW1, "db1": db1}
     return gradients
 
+def backward_propagation_with_regularization(X, Y, cache, lambd):
+    """
+    Implements the backward propagation of our baseline model to which we added an L2 regularization.
+    
+    Arguments:
+        X -- input dataset, of shape (input size, number of examples)
+        Y -- "true" labels vector, of shape (output size, number of examples)
+        cache -- cache output from forward_propagation()
+        lambd -- regularization hyperparameter, scalar
+    
+    Returns:
+        gradients -- A dictionary with the gradients with respect to each parameter, activation and pre-activation variables
+    """
+    
+    
+    gradients = {"dZ3": dZ3, "dW3": dW3, "db3": db3,
+                 "dA2": dA2, "dZ2": dZ2, "dW2": dW2, "db2": db2,
+                 "dA1": dA1, "dZ1": dZ1, "dW1": dW1, "db1": db1}
+    return gradients
+    
 def update_parameters(parameters, grads, learning_rate):
     """
     Update parameters using gradient descent

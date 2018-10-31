@@ -22,8 +22,10 @@ import matplotlib.pyplot as plt
 from reg_utils import initialize_parameters, predict_dec# load_2D_dataset, plot_decision_boundary, sigmoid, relu, 
 #from reg_utils import # forward_propagation, compute_cost, backward_propagation, predict, update_parameters
 from my_reg_utils import sigmoid, relu, load_2D_dataset
-from my_reg_utils import forward_propagation, forward_propagation_with_dropout, compute_cost, backward_propagation, update_parameters
+from my_reg_utils import forward_propagation, forward_propagation_with_dropout, backward_propagation, update_parameters
 from my_reg_utils import predict, plot_decision_boundary
+from my_reg_utils import compute_cost, compute_cost_with_regularization
+from testCases import compute_cost_with_regularization_test_case
 
 plt.rcParams['figure.figsize'] = (5.0, 5.0)
 plt.rcParams['image.interpolation'] = 'nearest'
@@ -112,6 +114,7 @@ axes.set_ylim([-0.75, 0.65])
 #plot_decision_boundary(train_X, train_Y, parameters)
 plot_decision_boundary(test_X, test_Y, parameters)
 
-
+A3, Y_assess, parameters = compute_cost_with_regularization_test_case()
+print("cost = " + str(compute_cost_with_regularization(A3, Y_assess, parameters, lambd = 0.1)))
 
 

@@ -22,10 +22,12 @@ import matplotlib.pyplot as plt
 from reg_utils import initialize_parameters, predict_dec# load_2D_dataset, plot_decision_boundary, sigmoid, relu, 
 #from reg_utils import # forward_propagation, compute_cost, backward_propagation, predict, update_parameters
 from my_reg_utils import sigmoid, relu, load_2D_dataset
-from my_reg_utils import forward_propagation, forward_propagation_with_dropout, backward_propagation, update_parameters
+from my_reg_utils import forward_propagation, forward_propagation_with_dropout
+from my_reg_utils import backward_propagation, backward_propagation_with_regularization, backward_propagation_with_dropout
+from my_reg_utils import update_parameters
 from my_reg_utils import predict, plot_decision_boundary
 from my_reg_utils import compute_cost, compute_cost_with_regularization
-from testCases import compute_cost_with_regularization_test_case
+from testCases import *
 
 plt.rcParams['figure.figsize'] = (5.0, 5.0)
 plt.rcParams['image.interpolation'] = 'nearest'
@@ -33,7 +35,7 @@ plt.rcParams['image.cmap'] = 'gray'
 
 
 #Load data
-train_X, train_Y, test_X, test_Y = load_2D_dataset(plot = True)
+train_X, train_Y, test_X, test_Y = load_2D_dataset(plot = False)
 
 def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, plot_loss = True, lambd = 0, keep_prob = 1):
     """
@@ -72,15 +74,15 @@ def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, 
         if lambd == 0:
             cost = compute_cost(a3, Y)
         else:
-            pass
+            cost = compute_cost_with_regularization(a3, Y, parameters, lambd)
         
         # Backward propagation
         if lambd == 0 and keep_prob == 1:
             grads = backward_propagation(X, Y, cache)
         elif lambd != 0:
-            pass
+            grads = backward_propagation_with_regularization(X, Y, cache, lambd)
         elif keep_prob < 1:
-            pass
+            grads = backward_propagation_with_dropout(X, Y, cache, keep_prob)
         
         # Update parameters
         parameters = update_parameters(parameters, grads, learning_rate)
@@ -101,20 +103,22 @@ def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, 
         
     return parameters
 
-parameters = model(train_X, train_Y, print_cost = False)
+# Train model on the train set
+parameters = model(train_X, train_Y, print_cost = True, lambd = 0, keep_prob = 0.86)
 print("On the training set: ")
 predictions_train = predict(train_X, train_Y, parameters, print_results = True)
 print("On the test set: ")
+# Make predictions on the test set
 predictions_test = predict(test_X, test_Y, parameters, print_results = True)
 
-plt.title("Model without regularization")
+# Plot decision boundary
+plt.title("Model with L2 regularization")
 axes = plt.gca()
 axes.set_xlim([-0.75, 0.40])
 axes.set_ylim([-0.75, 0.65])
 #plot_decision_boundary(train_X, train_Y, parameters)
 plot_decision_boundary(test_X, test_Y, parameters)
 
-A3, Y_assess, parameters = compute_cost_with_regularization_test_case()
-print("cost = " + str(compute_cost_with_regularization(A3, Y_assess, parameters, lambd = 0.1)))
+
 
 

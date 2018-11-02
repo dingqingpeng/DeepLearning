@@ -88,7 +88,7 @@ def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, 
         parameters = update_parameters(parameters, grads, learning_rate)
         
         # Print the loss every 2000 iterations
-        if print_cost and i % 2000 == 0:
+        if print_cost and i % 200 == 0:
             print("Cost after iteration {}: {}".format(i, cost))
         # Log cost every 1000 iterations
         costs.append(cost)
@@ -104,7 +104,7 @@ def model(X, Y, learning_rate = 0.3, num_iterations = 30000, print_cost = True, 
     return parameters
 
 # Train model on the train set
-parameters = model(train_X, train_Y, print_cost = True, lambd = 0, keep_prob = 0.86)
+parameters = model(train_X, train_Y, print_cost = False, lambd = 0, keep_prob = 0.86)
 print("On the training set: ")
 predictions_train = predict(train_X, train_Y, parameters, print_results = True)
 print("On the test set: ")

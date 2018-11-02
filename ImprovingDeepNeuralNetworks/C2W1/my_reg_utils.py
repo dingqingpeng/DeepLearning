@@ -149,6 +149,14 @@ def forward_propagation_with_dropout(X, parameters, keep_prob):
     
     cache = (Z1, D1, A1, W1, b1, Z2, D2, A2, W2, b2, Z3, A3, W3, b3)
     
+    #-------------#
+#    if 1. in A3:
+#        pos = np.argwhere(A3 == 1.)
+#        print(Z3.shape)
+#        print(Z3[0][0])
+#        print(A3[0][0])
+    #-------------#
+    
     return A3, cache
 
 def compute_cost(An, Y):
